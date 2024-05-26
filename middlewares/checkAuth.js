@@ -4,7 +4,7 @@ const User = require("../models/User.js");
 const CustomError = require("../utils/customError.js");
 
 // middleware for protected routes
-export const isAuth = asyncErrorHandler(async (req, res, next) => {
+exports.isAuth = asyncErrorHandler(async (req, res, next) => {
   const authHeader = req.headers.authorization; //Bearer Token
   const token = authHeader?.split(" ")[1];
   if (!token) {
@@ -35,9 +35,9 @@ export const isAuth = asyncErrorHandler(async (req, res, next) => {
     next(error);
   }
 });
-
+h;
 // middleware to hit before trying to reauthenticate user when client refreshes
-export const refreshTokenCheck = asyncErrorHandler(async (req, res, next) => {
+exports.refreshTokenCheck = asyncErrorHandler(async (req, res, next) => {
   const refreshToken = req.cookies["refresh_token"];
   if (!refreshToken) {
     console.log("There is an absence of refresh token");
@@ -69,3 +69,5 @@ export const refreshTokenCheck = asyncErrorHandler(async (req, res, next) => {
     next(error);
   }
 });
+
+

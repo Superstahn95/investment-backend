@@ -4,9 +4,8 @@ const User = require("../models/User");
 const CustomError = require("../utils/customError");
 // const { sendMail } = require("../utils/emailUser");
 
-exports.registerUser = asyncErrorHandler(async (req, res, next) => {
-  //create a user
-
+//register user
+export const registerUser = asyncErrorHandler(async (req, res, next) => {
   const newUser = new User(req.body);
   const user = await newUser.save();
   const refreshToken = generateRefreshToken(user._id);
@@ -28,7 +27,8 @@ exports.registerUser = asyncErrorHandler(async (req, res, next) => {
     });
 });
 
-exports.loginUser = asyncErrorHandler(async (req, res, next) => {
+//login user
+export const loginUser = asyncErrorHandler(async (req, res, next) => {
   console.log("Hitting this end point");
   const { email, password } = req.body;
   if (!email || !password) {
@@ -67,7 +67,8 @@ exports.loginUser = asyncErrorHandler(async (req, res, next) => {
     });
 });
 
-exports.reAuthenticate = asyncErrorHandler(async (req, res, next) => {
+//reauthenticate user 1
+export const reAuthenticate = asyncErrorHandler(async (req, res, next) => {
   const token = req.body.token;
   if (!token) {
     const err = new CustomError("No token!! Not authenticated", 401);
@@ -87,7 +88,9 @@ exports.reAuthenticate = asyncErrorHandler(async (req, res, next) => {
   });
 });
 
-exports.protected = asyncErrorHandler(async (req, res, next) => {
+//check if user is authenticated
+
+export const protect = asyncErrorHandler(async (req, res, next) => {
   let token;
   if (
     req.headers.authorization &&
@@ -110,39 +113,12 @@ exports.protected = asyncErrorHandler(async (req, res, next) => {
 });
 export const refreshToken = asyncErrorHandler(async (req, res, next) => {
   //our request is going to have a user property
-  try {
-    const accessToken = generateAccessToken(req.user?.id);
-    const responseData = { token: accessToken };
-    res.status(200).json(responseData);
-  } catch (error) {
-    next(error);
-  }
+  const accessToken = generateAccessToken(req.user?.id);
+  const responseData = { token: accessToken };
+  res.status(200).json(responseData);
 });
 
 // exports.restricted = asyncErrorHandler(async (req, res, next) => {});
-
-exports.checkUserRole = (role) => {
-  //if i want to grant permission to different roles, i can modify the parameter to "...role".
-  //and then i can say if role.includes(req.user.role || userRole)
-  return (req, res, next) => {
-    const userRole = req.user.role;
-    if (userRole != role) {
-      const err = new CustomError(
-        "You are not an admin and hence not authorized",
-        403
-      );
-      return next(err);
-    } else {
-      next();
-    }
-  };
-};
-
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: "30d",
-  });
-};
 
 const generateAccessToken = (id) => {
   return jwt.sign({ id }, process.env.ACCESS_TOKEN_SECRET_KEY, {
