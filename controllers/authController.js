@@ -2,10 +2,8 @@ const asyncErrorHandler = require("../utils/asyncErrorHandler");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const CustomError = require("../utils/customError");
-// const { sendMail } = require("../utils/emailUser");
 
-//register user
-export const registerUser = asyncErrorHandler(async (req, res, next) => {
+exports.registerUser = asyncErrorHandler(async (req, res, next) => {
   const newUser = new User(req.body);
   const user = await newUser.save();
   const refreshToken = generateRefreshToken(user._id);
@@ -27,8 +25,7 @@ export const registerUser = asyncErrorHandler(async (req, res, next) => {
     });
 });
 
-//login user
-export const loginUser = asyncErrorHandler(async (req, res, next) => {
+exports.loginUser = asyncErrorHandler(async (req, res, next) => {
   console.log("Hitting this end point");
   const { email, password } = req.body;
   if (!email || !password) {
@@ -61,14 +58,13 @@ export const loginUser = asyncErrorHandler(async (req, res, next) => {
     .status(201)
     .json({
       status: "success",
-      message: "user created",
+      message: "user logged in",
       user,
       token: accessToken,
     });
 });
 
-//reauthenticate user 1
-export const reAuthenticate = asyncErrorHandler(async (req, res, next) => {
+exports.reAuthenticate = asyncErrorHandler(async (req, res, next) => {
   const token = req.body.token;
   if (!token) {
     const err = new CustomError("No token!! Not authenticated", 401);
@@ -88,9 +84,7 @@ export const reAuthenticate = asyncErrorHandler(async (req, res, next) => {
   });
 });
 
-//check if user is authenticated
-
-export const protect = asyncErrorHandler(async (req, res, next) => {
+exports.protect = asyncErrorHandler(async (req, res, next) => {
   let token;
   if (
     req.headers.authorization &&
@@ -111,20 +105,19 @@ export const protect = asyncErrorHandler(async (req, res, next) => {
   req.user = user;
   next();
 });
-export const refreshToken = asyncErrorHandler(async (req, res, next) => {
-  //our request is going to have a user property
+
+exports.refreshToken = asyncErrorHandler(async (req, res, next) => {
   const accessToken = generateAccessToken(req.user?.id);
   const responseData = { token: accessToken };
   res.status(200).json(responseData);
 });
-
-// exports.restricted = asyncErrorHandler(async (req, res, next) => {});
 
 const generateAccessToken = (id) => {
   return jwt.sign({ id }, process.env.ACCESS_TOKEN_SECRET_KEY, {
     expiresIn: process.env.ACCESS_TOKEN_EXPIRY_TIME,
   });
 };
+
 const generateRefreshToken = (id) => {
   return jwt.sign({ id }, process.env.REFRESH_TOKEN_SECRET_KEY, {
     expiresIn: process.env.REFRESH_TOKEN_EXPIRY_TIME,

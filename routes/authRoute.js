@@ -1,5 +1,4 @@
 const express = require("express");
-const { isAuth, refreshTokenCheck } = require("../middlewares/checkAuth");
 const {
   refreshToken,
   loginUser,
@@ -11,7 +10,7 @@ const router = express.Router();
 
 router.post("/login", loginUser);
 router.post("/register", registerUser);
-router.get("/refreshToken", refreshToken);
+router.get("/refreshToken", refreshTokenCheck, refreshToken);
 // router.get(
 //   "/check-role",
 //   isAuth,

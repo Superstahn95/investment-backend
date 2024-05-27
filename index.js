@@ -6,6 +6,7 @@ const helmet = require("helmet");
 const connectDb = require("./config/db");
 const globalErrorHandler = require("./controllers/errorController");
 const cors = require("cors");
+const corsMiddleware = require("./middlewares/cors");
 // const { scheduleUserBalanceUpdates } = require("./controllers/userController");
 // const corsMiddleware = require("./middlewares/cors");
 
@@ -18,10 +19,10 @@ const PORT = process.env.PORT || 5000;
 app.use(morgan("dev"));
 app.use(helmet());
 app.use(cookieParser());
-app.use(cors());
+// app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-// app.use(corsMiddleware);
+app.use(corsMiddleware);
 
 app.get("/test", (req, res) => {
   res.status(200).json({
@@ -32,8 +33,8 @@ app.get("/test", (req, res) => {
 app.use("/api/v1/auth", require("./routes/authRoute"));
 app.use("/api/v1/deposit", require("./routes/depositRoute"));
 app.use("/api/v1/plan", require("./routes/planRoute"));
-app.use("/api/v1/user", require("./routes/userRoute"));
-app.use("/api/v1/dashboard-summary", require("./routes/dashboardRoute"));
+// app.use("/api/v1/user", require("./routes/userRoute"));
+app.use("/api/v1/dashboard-summary", require("./routes/dashboardStatsRoute"));
 app.use("*", (req, res) => {
   res.status(404).json({
     messaege: "Page not found",

@@ -35,7 +35,7 @@ exports.isAuth = asyncErrorHandler(async (req, res, next) => {
     next(error);
   }
 });
-h;
+
 // middleware to hit before trying to reauthenticate user when client refreshes
 exports.refreshTokenCheck = asyncErrorHandler(async (req, res, next) => {
   const refreshToken = req.cookies["refresh_token"];
@@ -69,5 +69,3 @@ exports.refreshTokenCheck = asyncErrorHandler(async (req, res, next) => {
     next(error);
   }
 });
-
-
