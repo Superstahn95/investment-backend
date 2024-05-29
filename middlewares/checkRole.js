@@ -1,3 +1,4 @@
+const CustomError = require("../utils/customError");
 exports.checkUserRole = (role) => {
   //if i want to grant permission to different roles, i can modify the parameter to "...role".
   //and then i can say if role.includes(req.user.role || userRole)

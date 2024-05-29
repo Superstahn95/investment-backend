@@ -55,7 +55,7 @@ exports.loginUser = asyncErrorHandler(async (req, res, next) => {
       secure: process.env.NODE_ENVIRONMENT === "production",
       sameSite: "none",
     })
-    .status(201)
+    .status(200)
     .json({
       status: "success",
       message: "user logged in",

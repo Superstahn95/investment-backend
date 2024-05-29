@@ -33,7 +33,7 @@ app.get("/test", (req, res) => {
 app.use("/api/v1/auth", require("./routes/authRoute"));
 app.use("/api/v1/deposit", require("./routes/depositRoute"));
 app.use("/api/v1/plan", require("./routes/planRoute"));
-// app.use("/api/v1/user", require("./routes/userRoute"));
+app.use("/api/v1/users", require("./routes/userRoute"));
 app.use("/api/v1/dashboard-summary", require("./routes/dashboardStatsRoute"));
 app.use("*", (req, res) => {
   res.status(404).json({
