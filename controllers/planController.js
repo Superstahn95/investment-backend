@@ -15,7 +15,9 @@ exports.createPlan = asyncErrorHandler(async (req, res, next) => {
 
 //public logic for getting all plans
 exports.getPlans = asyncErrorHandler(async (req, res, next) => {
+  console.log("we hit the get plans route");
   const plans = await Plan.find();
+  console.log(plans);
   res.status(200).json({
     status: "success",
     plans,
@@ -53,7 +55,7 @@ exports.updatePlan = asyncErrorHandler(async (req, res, next) => {
   );
   res.status(200).json({
     status: "success",
-    message: `${updatedPlan.name} has been updated`,
+    message: `${updatedPlan.name}'s details has been updated`,
   });
 });
 
