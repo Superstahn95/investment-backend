@@ -40,9 +40,11 @@ exports.loginUser = asyncErrorHandler(async (req, res, next) => {
     return next(err);
   }
 
-  const isPasswordMatch = user.compareDbPassword(password, user.password);
+  const isPasswordMatch = await user.compareDbPassword(password, user.password);
+  console.log(password);
+  console.log(isPasswordMatch);
   if (!isPasswordMatch) {
-    const err = new CustomError("Invalid credentials", 401);
+    const err = new CustomError("Invalid credentials", 400);
     return next(err);
   }
   const refreshToken = generateRefreshToken(user._id);

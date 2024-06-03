@@ -30,7 +30,8 @@ exports.isAuth = asyncErrorHandler(async (req, res, next) => {
       error.name === "JsonWebTokenError" ||
       error.name === "NotBeforeError"
     ) {
-      return next(CustomError("Unauthorized", 401));
+      const err = new CustomError("Unauthorized", 401);
+      return next(err);
     }
     next(error);
   }

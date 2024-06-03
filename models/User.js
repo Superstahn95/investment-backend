@@ -36,6 +36,17 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please enter your phone number"],
   },
+  profilePhoto: {
+    type: Object,
+    secure_url: {
+      type: String,
+      required: true,
+    },
+    public_id: {
+      type: String,
+      required: true,
+    },
+  },
   role: {
     type: String,
     enum: ["user", "admin"],
@@ -55,6 +66,18 @@ const userSchema = new mongoose.Schema({
   },
   investedFundsAndReturns: {
     type: Number,
+    default: 0,
+  },
+  isVerified: {
+    type: Boolean,
+    default: false,
+  },
+  isRestrictedFromWithdrawal: {
+    type: Boolean,
+    default: false,
+  },
+  withdrawableFunds: {
+    type: String,
     default: 0,
   },
   subscriptions: [subscriptionSchema], //We are actually using a schema here without creating a collection in our db
@@ -92,6 +115,9 @@ userSchema.pre("save", async function (next) {
 });
 
 userSchema.methods.compareDbPassword = async (password, dbPassword) => {
+  console.log("we just hit this method");
+  console.log(`This is password sent ${password}`);
+  console.log(`This is password stored ${dbPassword}`);
   return await bcrypt.compare(password, dbPassword);
 };
 

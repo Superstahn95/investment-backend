@@ -4,7 +4,9 @@ const CustomError = require("../utils/customError");
 
 //get all withdrawal request for admin
 exports.getWithdrawals = asyncErrorHandler(async (req, res, next) => {
-  const withdrawals = await Withdrawal.find();
+  const withdrawals = await Withdrawal.find()
+    .populate("user")
+    .sort({ createdAt: -1 });
   res.status(200).json({
     status: "success",
     withdrawals,
