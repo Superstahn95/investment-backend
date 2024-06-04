@@ -36,6 +36,7 @@ app.use("/api/v1/plan", require("./routes/planRoute"));
 app.use("/api/v1/users", require("./routes/userRoute"));
 app.use("/api/v1/dashboard-summary", require("./routes/dashboardStatsRoute"));
 app.use("/api/v1/withdrawal", require("./routes/withdrawalRoute"));
+app.use("/api/v1/transaction", require("./routes/transactionRoute"));
 app.use("*", (req, res) => {
   res.status(404).json({
     messaege: "Page not found",
