@@ -59,7 +59,7 @@ exports.debitOrCreditUser = asyncErrorHandler(async (req, res, next) => {
     const err = new CustomError("This action is not recognized", 400);
     return next(err);
   }
-  await user.save();
+  await user.save({ validateBeforeSave: false });
   res.status(200).json({
     status: "success",
     message: `${user.name}'s intended balance has been ${action}`,
@@ -84,6 +84,23 @@ exports.scheduleUserBalanceUpdates = asyncErrorHandler(async () => {
       );
     }
   }
+});
+
+exports.authorizeUserLogin = asyncErrorHandler(async (req, res, next) => {
+  const { id } = req.params;
+  const user = await User.findById(id);
+  if (!user) {
+    const err = new CustomError("User not found", 404);
+    return next(err);
+  }
+  user.isAuthorized = !user.isAuthorized;
+  await user.save({ validateBeforeSave: false });
+  res.status(200).json({
+    status: "success",
+    message: user.isAuthorized
+      ? "User has been granted access"
+      : "User access has been revoked",
+  });
 });
 
 //update user profile
@@ -165,7 +182,7 @@ exports.changeWithdrawalStatus = asyncErrorHandler(async (req, res, next) => {
     return next(err);
   }
   user.isRestrictedFromWithdrawal = !user.isRestrictedFromWithdrawal;
-  await user.save();
+  await user.save({ validateBeforeSave: false });
   res.status(200).json({
     status: "success",
     message: "Withdrawal status has been changed",

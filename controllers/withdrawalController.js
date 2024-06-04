@@ -1,4 +1,5 @@
 const Withdrawal = require("../models/Withdrawal");
+const Transaction = require("../models/Transaction");
 const asyncErrorHandler = require("../utils/asyncErrorHandler");
 const CustomError = require("../utils/customError");
 
@@ -58,6 +59,11 @@ exports.approveWithdrawal = asyncErrorHandler(async (req, res, next) => {
     { new: true }
   );
   //send email to user updating them on withdrawal
+  await Transaction.create({
+    amount: withdrawal.amount,
+    type: "withdrawal",
+    user: withdrawal.user,
+  });
   res.status(200).json({
     status: "success",
     message: `withdrawal of $${updatedWithdrawal.amount} has been paid`,

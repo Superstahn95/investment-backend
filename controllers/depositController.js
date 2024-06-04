@@ -1,4 +1,5 @@
 const Deposit = require("../models/Deposit");
+const Transaction = require("../models/Transaction");
 const User = require("../models/User");
 const asyncErrorHandler = require("../utils/asyncErrorHandler");
 const cloudinary = require("../utils/cloudinary");
@@ -52,12 +53,6 @@ exports.makeDeposit = asyncErrorHandler(async (req, res, next) => {
 
   //send mail to confirm deposit
 
-  //   sendMail(
-  //     req.user,
-  //     "Placed Deposit",
-  //     `Your deposit of $${deposit.amount} has been made and pending approval`
-  //   );
-
   res.status(201).json({
     status: "success",
     message: `deposit of $${amount} received pending approval`,
@@ -106,6 +101,13 @@ exports.approveDeposit = asyncErrorHandler(async (req, res, next) => {
   //send back response
   //try firing a mail here to the user=> solve this
   //for deposit approval, we will be using nodemailer
+
+  //create a new transaction
+  await Transaction.create({
+    amount: deposit.amount,
+    type: "deposit",
+    user: deposit.user,
+  });
   res.status(200).json({
     status: "success",
     message: `$${deposit.amount} has been approved`,

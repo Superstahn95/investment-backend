@@ -85,7 +85,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please enter your password"],
   },
-
+  isAuthorized: {
+    type: Boolean,
+    default: false,
+  },
   confirmPassword: {
     type: String,
     validate: {
@@ -115,9 +118,6 @@ userSchema.pre("save", async function (next) {
 });
 
 userSchema.methods.compareDbPassword = async (password, dbPassword) => {
-  console.log("we just hit this method");
-  console.log(`This is password sent ${password}`);
-  console.log(`This is password stored ${dbPassword}`);
   return await bcrypt.compare(password, dbPassword);
 };
 

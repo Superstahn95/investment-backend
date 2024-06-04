@@ -34,7 +34,7 @@ exports.loginUser = asyncErrorHandler(async (req, res, next) => {
     return next(err);
   }
   //check if a user with that mail exists
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email }).populate("subscriptions.plan");
   if (!user) {
     const err = new CustomError("Invalid credentials", 401);
     return next(err);

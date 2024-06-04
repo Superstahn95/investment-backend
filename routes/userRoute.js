@@ -7,6 +7,7 @@ const {
   changeUserPassword,
   changeWithdrawalStatus,
   debitOrCreditUser,
+  authorizeUserLogin,
 } = require("../controllers/userController");
 const { isAuth } = require("../middlewares/checkAuth");
 const { checkUserRole } = require("../middlewares/checkRole");
@@ -23,6 +24,9 @@ router.delete("/", isAuth, checkUserRole("admin"), deleteUser);
 
 //change user password
 router.patch("/change-password", isAuth, changeUserPassword);
+
+//change user access status
+router.patch("/status/:id", isAuth, checkUserRole("admin"), authorizeUserLogin);
 
 //toggle withdrawal status
 router.patch(
