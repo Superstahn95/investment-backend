@@ -42,7 +42,7 @@ exports.refreshTokenCheck = asyncErrorHandler(async (req, res, next) => {
   const refreshToken = req.cookies["refresh_token"];
   if (!refreshToken) {
     console.log("There is an absence of refresh token");
-    return next(CustomError("Unauthenticated", 401));
+    return next(CustomError("Login or sign up", 400));
   }
   try {
     //verify refresh token
@@ -55,7 +55,7 @@ exports.refreshTokenCheck = asyncErrorHandler(async (req, res, next) => {
     }
     const user = await User.findOne({ _id: decodedToken.id });
     if (!user) {
-      return next(CustomError(401, "Unauthorized"));
+      return next(CustomError("User not found", 404));
     }
     req.user = user;
     next();
@@ -65,7 +65,9 @@ exports.refreshTokenCheck = asyncErrorHandler(async (req, res, next) => {
       error.name === "JsonWebTokenError" ||
       error.name === "NotBeforeError"
     ) {
-      return next(CustomError(401, "Unauthorized"));
+      return next(
+        CustomError("Authentication failed!!! Login or sign up", 401)
+      );
     }
     next(error);
   }

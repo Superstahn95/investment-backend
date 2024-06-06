@@ -114,6 +114,11 @@ exports.refreshToken = asyncErrorHandler(async (req, res, next) => {
   res.status(200).json(responseData);
 });
 
+exports.logOut = asyncErrorHandler(async (req, res, next) => {
+  res.clearCookie("refresh_token");
+  res.status(200).json({ status: "success", message: "logout successful" });
+});
+
 const generateAccessToken = (id) => {
   return jwt.sign({ id }, process.env.ACCESS_TOKEN_SECRET_KEY, {
     expiresIn: process.env.ACCESS_TOKEN_EXPIRY_TIME,

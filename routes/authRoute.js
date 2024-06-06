@@ -3,6 +3,7 @@ const {
   refreshToken,
   loginUser,
   registerUser,
+  logOut,
 } = require("../controllers/authController");
 const { isAuth, refreshTokenCheck } = require("../middlewares/checkAuth");
 const { checkUserRole } = require("../middlewares/checkRole");
@@ -11,6 +12,7 @@ const router = express.Router();
 router.post("/login", loginUser);
 router.post("/register", registerUser);
 router.get("/refreshToken", refreshTokenCheck, refreshToken);
+router.post("/logout", isAuth, logOut);
 // router.get(
 //   "/check-role",
 //   isAuth,

@@ -56,6 +56,7 @@ exports.makeDeposit = asyncErrorHandler(async (req, res, next) => {
   res.status(201).json({
     status: "success",
     message: `deposit of $${amount} received pending approval`,
+    amountDeposited: amount,
   });
 });
 

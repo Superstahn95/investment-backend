@@ -36,6 +36,7 @@ exports.createWithdrawalRequest = asyncErrorHandler(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     message: `Your withdrawal request of ${amount} has been received and is currently being processed`,
+    amountRequested: amount,
   });
 });
 

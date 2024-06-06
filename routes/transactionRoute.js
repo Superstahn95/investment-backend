@@ -1,4 +1,4 @@
-const express = require("expresss");
+const express = require("express");
 const { isAuth } = require("../middlewares/checkAuth");
 const { getUserTransaction } = require("../controllers/transactionController");
 

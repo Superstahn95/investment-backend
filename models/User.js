@@ -38,7 +38,7 @@ const userSchema = new mongoose.Schema({
   },
   profilePhoto: {
     type: Object,
-    secure_url: {
+    url: {
       type: String,
       required: true,
     },
@@ -77,7 +77,7 @@ const userSchema = new mongoose.Schema({
     default: false,
   },
   withdrawableFunds: {
-    type: String,
+    type: Number,
     default: 0,
   },
   subscriptions: [subscriptionSchema], //We are actually using a schema here without creating a collection in our db
