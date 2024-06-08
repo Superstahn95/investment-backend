@@ -57,15 +57,15 @@ const userSchema = new mongoose.Schema({
     default: 0, //how do i actually restrict this information from being sent to my backend from the frontend?
   },
   totalDeposit: {
-    type: Number,
+    type: Number, //user's total approved deposit
     default: 0,
   },
   pendingDeposit: {
-    type: Number,
+    type: Number, //user's yet to be approved deposit
     default: 0,
   },
   investedFundsAndReturns: {
-    type: Number,
+    type: Number, //total amount of invested funds and returns
     default: 0,
   },
   isVerified: {
@@ -77,6 +77,10 @@ const userSchema = new mongoose.Schema({
     default: false,
   },
   withdrawableFunds: {
+    type: Number, //total amount of withdrawable funds set by admin
+    default: 0,
+  },
+  totalWithdrawal: {
     type: Number,
     default: 0,
   },

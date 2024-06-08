@@ -42,7 +42,7 @@ exports.refreshTokenCheck = asyncErrorHandler(async (req, res, next) => {
   const refreshToken = req.cookies["refresh_token"];
   if (!refreshToken) {
     console.log("There is an absence of refresh token");
-    return next(CustomError("Login or sign up", 400));
+    return next(new CustomError("Login or sign up", 400));
   }
   try {
     //verify refresh token
@@ -51,11 +51,13 @@ exports.refreshTokenCheck = asyncErrorHandler(async (req, res, next) => {
       process.env.REFRESH_TOKEN_SECRET_KEY
     );
     if (!decodedToken) {
-      return next(CustomError("Unauthorized", 401));
+      return next(new CustomError("Unauthorized", 401));
     }
-    const user = await User.findOne({ _id: decodedToken.id });
+    const user = await User.findOne({ _id: decodedToken.id }).populate(
+      "subscriptions.plan"
+    );
     if (!user) {
-      return next(CustomError("User not found", 404));
+      return next(new CustomError("User not found", 404));
     }
     req.user = user;
     next();
@@ -66,7 +68,7 @@ exports.refreshTokenCheck = asyncErrorHandler(async (req, res, next) => {
       error.name === "NotBeforeError"
     ) {
       return next(
-        CustomError("Authentication failed!!! Login or sign up", 401)
+        new CustomError("Authentication failed!!! Login or sign up", 401)
       );
     }
     next(error);

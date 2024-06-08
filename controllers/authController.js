@@ -13,7 +13,7 @@ exports.registerUser = asyncErrorHandler(async (req, res, next) => {
     .cookie("refresh_token", refreshToken, {
       httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      secure: process.env.NODE_ENVIRONMENT === "production",
+      secure: process.env.NODE_ENV === "production",
       sameSite: "none",
     })
     .status(201)
@@ -54,7 +54,7 @@ exports.loginUser = asyncErrorHandler(async (req, res, next) => {
     .cookie("refresh_token", refreshToken, {
       httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      secure: process.env.NODE_ENVIRONMENT === "production",
+      secure: process.env.NODE_ENV === "production",
       sameSite: "none",
     })
     .status(200)
@@ -110,11 +110,13 @@ exports.protect = asyncErrorHandler(async (req, res, next) => {
 
 exports.refreshToken = asyncErrorHandler(async (req, res, next) => {
   const accessToken = generateAccessToken(req.user?.id);
-  const responseData = { token: accessToken };
+  const responseData = { token: accessToken, user: req.user };
   res.status(200).json(responseData);
 });
 
 exports.logOut = asyncErrorHandler(async (req, res, next) => {
+  const refreshToken = req.cookies["refresh_token"];
+  console.log(refreshToken);
   res.clearCookie("refresh_token");
   res.status(200).json({ status: "success", message: "logout successful" });
 });

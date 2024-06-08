@@ -66,26 +66,6 @@ exports.debitOrCreditUser = asyncErrorHandler(async (req, res, next) => {
   });
 });
 
-//we need to take note of the money invested on each plans by the various users at every point in time
-exports.scheduleUserBalanceUpdates = asyncErrorHandler(async () => {
-  const users = await User.find();
-  for (const user of users) {
-    for (const subscription of user.subscriptions) {
-      //check frequency and calculate cron expression
-      const cronExpression = calculateCronExpression(
-        subscription.frequency,
-        subscription.startDate
-      );
-
-      //schedule task
-      cron.schedule(
-        cronExpression,
-        updateUserBalancePerSubscription(user, subscription)
-      );
-    }
-  }
-});
-
 exports.authorizeUserLogin = asyncErrorHandler(async (req, res, next) => {
   const { id } = req.params;
   const user = await User.findById(id);
@@ -234,3 +214,50 @@ const updateUserBalancePerSubscription = asyncErrorHandler(
     console.log("A user balance has been updated");
   }
 );
+
+//we need to take note of the money invested on each plans by the various users at every point in time
+exports.scheduleUserBalanceUpdates = asyncErrorHandler(async () => {
+  const users = await User.find();
+  for (const user of users) {
+    for (const subscription of user.subscriptions) {
+      //check frequency and calculate cron expression
+      const cronExpression = calculateCronExpression(
+        subscription.frequency,
+        subscription.startDate
+      );
+
+      //schedule task
+      cron.schedule(
+        cronExpression,
+        updateUserBalancePerSubscription(user, subscription)
+      );
+    }
+  }
+});
+
+// no need calculating con expression, since this is likely to update every day
+const topUpUser = asyncErrorHandler(async (req, res, next) => {
+  // console.log("add $10 to user's total Deposit");
+  const users = await User.find();
+  const check = true;
+  if (!check) {
+    const err = new CustomError("Plan not found", 404);
+    return next(err);
+  }
+  for (const user of users) {
+    //add $10 to toalDeposit
+    for (const subscription of user.subscriptions) {
+      cron.schedule("0 0 * * *", async function () {
+        const topUpAmount = (plan.topUpAmount / 100) * subscription.cost;
+        console.log(topUpAmount);
+        user.investedFundsAndReturns =
+          user.investedFundsAndReturns + topUpAmount;
+        await user.save({ validateBeforeSave: false });
+        console.log(
+          `we just updated ${user.name}'s invested funds and returns field`
+        );
+      });
+    }
+  }
+});
+// topUpUser();

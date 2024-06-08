@@ -7,6 +7,7 @@ const connectDb = require("./config/db");
 const globalErrorHandler = require("./controllers/errorController");
 const cors = require("cors");
 const corsMiddleware = require("./middlewares/cors");
+// const cron = require("node-cron");
 // const { scheduleUserBalanceUpdates } = require("./controllers/userController");
 // const corsMiddleware = require("./middlewares/cors");
 
@@ -14,6 +15,13 @@ dotenv.config();
 const app = express();
 
 const PORT = process.env.PORT || 5000;
+
+// const updateLog = () => {
+//   cron.schedule("* * * * *", function () {
+//     console.log("running a task every minute");
+//   });
+// };
+// updateLog();
 
 //middlewares
 app.use(morgan("dev"));
@@ -30,6 +38,7 @@ app.get("/test", (req, res) => {
     message: "This is functional right now and working",
   });
 });
+
 app.use("/api/v1/auth", require("./routes/authRoute"));
 app.use("/api/v1/deposit", require("./routes/depositRoute"));
 app.use("/api/v1/plan", require("./routes/planRoute"));

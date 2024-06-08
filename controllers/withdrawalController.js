@@ -1,4 +1,5 @@
 const Withdrawal = require("../models/Withdrawal");
+const User = require("../models/User");
 const Transaction = require("../models/Transaction");
 const asyncErrorHandler = require("../utils/asyncErrorHandler");
 const CustomError = require("../utils/customError");
@@ -32,6 +33,9 @@ exports.createWithdrawalRequest = asyncErrorHandler(async (req, res, next) => {
   const newRequest = new Withdrawal({ amount, address, user: req.user });
   await newRequest.save();
   //grab user and carry out neccessary deductions from the respective user fields
+  const user = await User.findById(newRequest.user);
+  user.withdrawableFunds = user.withdrawableFunds - amount;
+  await user.save({ validateBeforeSave: false });
   //send mail to user saying request has been received
   res.status(200).json({
     status: "success",
@@ -48,7 +52,15 @@ exports.approveWithdrawal = asyncErrorHandler(async (req, res, next) => {
     const err = new CustomError("Withdrawal request not found", 404);
     return next(err);
   }
-  //grab user and carry out routine increment and decrement from pending and paid withdrawal
+
+  const user = await User.findById(withdrawal.user);
+  if (!user) {
+    const err = new CustomError(
+      "User with this withdrawal request not found",
+      404
+    );
+    return next(err);
+  }
 
   const updatedWithdrawal = await Withdrawal.findByIdAndUpdate(
     id,
@@ -64,6 +76,14 @@ exports.approveWithdrawal = asyncErrorHandler(async (req, res, next) => {
     amount: withdrawal.amount,
     type: "withdrawal",
     user: withdrawal.user,
+  });
+  //grab user and carry out routine increment and decrement from pending and paid withdrawal
+  // after payout, decrease investedFundsAndReturns and top up totalWithdrawals
+  await User.findByIdAndUpdate(withdrawal.user, {
+    $inc: {
+      totalWithdrawal: withdrawal.amount,
+      investedFundsAndReturns: -withdrawal.amount,
+    },
   });
   res.status(200).json({
     status: "success",
