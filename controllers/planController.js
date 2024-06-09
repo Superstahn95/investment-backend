@@ -15,9 +15,7 @@ exports.createPlan = asyncErrorHandler(async (req, res, next) => {
 
 //public logic for getting all plans
 exports.getPlans = asyncErrorHandler(async (req, res, next) => {
-  console.log("we hit the get plans route");
   const plans = await Plan.find();
-  console.log(plans);
   res.status(200).json({
     status: "success",
     plans,
@@ -194,9 +192,11 @@ exports.subscribeToPlan = asyncErrorHandler(async (req, res, next) => {
       },
       { new: true, runValidators: true }
     );
+    delete newSubscription.plan;
     return res.status(200).json({
       status: "success",
       message: `You successfully subscribed to ${plan.name} plan and $${amount} deducted for subscription`,
+      plan: newSubscription,
     });
   }
   //if amount is greater than maximum price of plan
@@ -214,8 +214,10 @@ exports.subscribeToPlan = asyncErrorHandler(async (req, res, next) => {
     },
     { new: true, runValidators: true }
   );
+  delete newSubscription.plan;
   return res.status(200).json({
     status: "success",
     message: `You successfully subscribed to ${plan.name} plan and $${plan.maximumPrice} deducted for subscription`,
+    plan: newSubscription,
   });
 });

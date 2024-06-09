@@ -76,6 +76,10 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  totalProfit: {
+    type: Number,
+    default: 0,
+  },
   withdrawableFunds: {
     type: Number, //total amount of withdrawable funds set by admin
     default: 0,

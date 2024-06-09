@@ -4,6 +4,7 @@
 //     ? ["http://localhost:5173"]
 //     : ["nothing yet"];
 
-const allowedOrigins = ["http://localhost:5173"];
+const devAllowedOrigins = ["http://localhost:5173"];
+const prodAllowedOrigins = ["https://investment-build-client.onrender.com"];
 
-module.exports = allowedOrigins;
+module.exports = devAllowedOrigins;

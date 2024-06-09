@@ -248,10 +248,12 @@ const topUpUser = asyncErrorHandler(async (req, res, next) => {
     //add $10 to toalDeposit
     for (const subscription of user.subscriptions) {
       cron.schedule("0 0 * * *", async function () {
+        const plan = await Plan.findById(subscription.plan);
         const topUpAmount = (plan.topUpAmount / 100) * subscription.cost;
         console.log(topUpAmount);
         user.investedFundsAndReturns =
           user.investedFundsAndReturns + topUpAmount;
+        user.totalProfit = user.totalProfit + topUpAmount;
         await user.save({ validateBeforeSave: false });
         console.log(
           `we just updated ${user.name}'s invested funds and returns field`
