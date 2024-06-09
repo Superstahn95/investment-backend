@@ -7,4 +7,4 @@
 const devAllowedOrigins = ["http://localhost:5173"];
 const prodAllowedOrigins = ["https://investment-build-client.onrender.com"];
 
-module.exports = devAllowedOrigins;
+module.exports = prodAllowedOrigins;
