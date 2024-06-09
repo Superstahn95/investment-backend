@@ -8,3 +8,11 @@ exports.getUserTransaction = asyncErrorHandler(async (req, res, next) => {
     transactions,
   });
 });
+
+exports.getAllTransactions = asyncErrorHandler(async (req, res, next) => {
+  const transactions = await Transaction.find().populate("user");
+  res.status(200).json({
+    status: "success",
+    transactions,
+  });
+});
