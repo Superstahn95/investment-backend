@@ -76,7 +76,7 @@ exports.deletePlan = asyncErrorHandler(async (req, res, next) => {
     });
 
     // Save the user after filtering subscriptions
-    await user.save();
+    await user.save({ validateBeforeSave: false });
   }
   res.status(200).json({
     status: "success",

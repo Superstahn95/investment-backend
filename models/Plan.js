@@ -20,7 +20,7 @@ const planSchema = new mongoose.Schema(
     },
     topUpMode: {
       type: String,
-      required: [true, "Select a top up mode"],
+      // required: [true, "Select a top up mode"],
     },
     topUpAmount: {
       type: Number, //when in use, we are going to take this as percentage
@@ -32,7 +32,7 @@ const planSchema = new mongoose.Schema(
     },
     topUpInterval: {
       type: String, //daily, weekly, monthly, yearly
-      required: [true, "Enter top up interval"],
+      // required: [true, "Enter top up interval"],
     },
     giftBonus: {
       type: Number,

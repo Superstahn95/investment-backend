@@ -12,7 +12,7 @@ const router = express.Router();
 router.post("/login", loginUser);
 router.post("/register", registerUser);
 router.get("/refreshToken", refreshTokenCheck, refreshToken);
-router.post("/logout", isAuth, logOut);
+router.post("/logout", logOut);
 // router.get(
 //   "/check-role",
 //   isAuth,
@@ -21,8 +21,7 @@ router.post("/logout", isAuth, logOut);
 //     res.status(200).json({
 //       status: "success",
 //       message: "You are an admin and hence can access this endpoint",
-//     });
-//   }
+//     }//   }
 // );
 
 module.exports = router;

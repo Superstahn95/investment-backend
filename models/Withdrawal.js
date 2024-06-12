@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const withdrawalSchema = new mongoose.Schema(
   {
     amount: {
-      type: String,
+      type: Number,
       required: [true, "amount is required"],
     },
     user: {
