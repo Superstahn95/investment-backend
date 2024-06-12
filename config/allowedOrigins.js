@@ -9,4 +9,4 @@ const prodAllowedOrigins = ["https://investment-build-client.onrender.com"];
 
 // to be handled better
 
-module.exports = devAllowedOrigins;
+module.exports = prodAllowedOrigins;
