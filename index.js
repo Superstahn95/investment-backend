@@ -22,13 +22,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(corsMiddleware);
 
-// app.use((req, res, next) => {
-//   res.setHeader(
-//     "Content-Security-Policy",
-//     "default-src 'self' https://api.coingecko.com; img-src 'self' data: *;"
-//   );
-//   next();
-// });
 app.use((req, res, next) => {
   let connectSrc = "'self'";
   if (process.env.NODE_ENV === "production") {
