@@ -30,9 +30,17 @@ app.use(corsMiddleware);
 //   next();
 // });
 app.use((req, res, next) => {
+  let connectSrc = "'self'";
+  if (process.env.NODE_ENV === "production") {
+    // Replace 'example.com' with your actual domain
+    connectSrc = "'self' https://investment-backend-1.onrender.com";
+  } else {
+    // For development, allow connections to localhost
+    connectSrc += " http://localhost:5000";
+  }
   res.setHeader(
     "Content-Security-Policy",
-    "default-src 'self' https://api.coingecko.com; connect-src 'self' http://127.0.0.1:5000 https://api.coingecko.com; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: *;"
+    `default-src 'self' https://api.coingecko.com; connect-src 'self' https://investment-backend-1.onrender.com https://api.coingecko.com; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: *;`
   );
   next();
 });
