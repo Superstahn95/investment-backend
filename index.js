@@ -5,23 +5,13 @@ const morgan = require("morgan");
 const helmet = require("helmet");
 const connectDb = require("./config/db");
 const globalErrorHandler = require("./controllers/errorController");
-const cors = require("cors");
+// const cors = require("cors");
 const corsMiddleware = require("./middlewares/cors");
-// const cron = require("node-cron");
-// const { scheduleUserBalanceUpdates } = require("./controllers/userController");
-// const corsMiddleware = require("./middlewares/cors");
 
 dotenv.config();
 const app = express();
 
 const PORT = process.env.PORT || 5000;
-
-// const updateLog = () => {
-//   cron.schedule("* * * * *", function () {
-//     console.log("running a task every minute");
-//   });
-// };
-// updateLog();
 
 //middlewares
 app.use(morgan("dev"));
@@ -31,6 +21,23 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(corsMiddleware);
+
+// app.use((req, res, next) => {
+//   res.setHeader(
+//     "Content-Security-Policy",
+//     "default-src 'self' https://api.coingecko.com; img-src 'self' data: *;"
+//   );
+//   next();
+// });
+app.use((req, res, next) => {
+  res.setHeader(
+    "Content-Security-Policy",
+    "default-src 'self' https://api.coingecko.com; connect-src 'self' http://127.0.0.1:5000 https://api.coingecko.com; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: *;"
+  );
+  next();
+});
+
+app.use(express.static("dist"));
 
 app.get("/test", (req, res) => {
   res.status(200).json({
@@ -46,9 +53,13 @@ app.use("/api/v1/users", require("./routes/userRoute"));
 app.use("/api/v1/dashboard-summary", require("./routes/dashboardStatsRoute"));
 app.use("/api/v1/withdrawal", require("./routes/withdrawalRoute"));
 app.use("/api/v1/transaction", require("./routes/transactionRoute"));
+// app.get("*", (req, res) => {
+//   res.sendFile(path.join(__dirname, "dist", "index.html"));
+// });
+app.use("*", express.static("dist"));
 app.use("*", (req, res) => {
   res.status(404).json({
-    messaege: "Page not found",
+    message: "Page not found",
   });
 });
 
