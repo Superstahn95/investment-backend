@@ -4,14 +4,15 @@ const {
   loginUser,
   registerUser,
   logOut,
+  getNewAccessToken,
 } = require("../controllers/authController");
-const { isAuth, refreshTokenCheck } = require("../middlewares/checkAuth");
-const { checkUserRole } = require("../middlewares/checkRole");
+const { refreshTokenCheck } = require("../middlewares/checkAuth");
 const router = express.Router();
 
 router.post("/login", loginUser);
 router.post("/register", registerUser);
 router.get("/refreshToken", refreshTokenCheck, refreshToken);
+router.post("/generate-token", refreshTokenCheck, getNewAccessToken);
 router.post("/logout", logOut);
 // router.get(
 //   "/check-role",

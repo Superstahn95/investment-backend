@@ -1,6 +1,5 @@
 const CustomError = require("../utils/customError");
 const devErrors = (err, res) => {
-  console.log(err.name);
   res.status(err.statusCode).json({
     status: err.status,
     err: err,
@@ -24,7 +23,6 @@ const prodErrors = (err, res) => {
 };
 const validationError = (err) => {
   const error = Object.values(err.errors).map((val) => {
-    console.log(val);
     return val.message;
   });
   const errorMessages = error.join(". ");
@@ -33,10 +31,7 @@ const validationError = (err) => {
 };
 
 const duplicateKeyError = (err) => {
-  console.log(err);
   const message = `The ${Object.keys(err.keyValue)} already exists`;
-  console.log(Object.keys(err.keyValue));
-  console.log(message);
   return new CustomError(message, 400);
 };
 const castErrorHandler = (err) => {

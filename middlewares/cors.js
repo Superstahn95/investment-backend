@@ -4,12 +4,10 @@ const allowedOrigins = require("../config/allowedOrigins");
 
 const corsOptions = {
   origin: (origin, callback) => {
-    console.log(allowedOrigins);
     if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
       callback(null, true);
     } else {
-      const err = new CustomError("Not allowed by cors", 403);
-      console.log("cors error");
+      const err = new CustomError("Not allowed by cors", 409);
       callback(err);
     }
   },

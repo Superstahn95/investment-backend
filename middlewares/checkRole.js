@@ -7,7 +7,7 @@ exports.checkUserRole = (role) => {
     if (userRole != role) {
       const err = new CustomError(
         "You are not an admin and hence not authorized",
-        403
+        401
       );
       return next(err);
     } else {

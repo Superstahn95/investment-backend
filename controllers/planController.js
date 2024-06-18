@@ -39,8 +39,6 @@ exports.getPlan = asyncErrorHandler(async (req, res, next) => {
 //admin logic for updating an existing plan
 exports.updatePlan = asyncErrorHandler(async (req, res, next) => {
   const { id } = req.params;
-  console.log(id);
-  console.log(req.body);
   const plan = await Plan.findById(id);
   if (!plan) {
     const err = new CustomError("No plan found", 404);
@@ -61,7 +59,6 @@ exports.updatePlan = asyncErrorHandler(async (req, res, next) => {
 exports.deletePlan = asyncErrorHandler(async (req, res, next) => {
   const { id } = req.params;
   const plan = await Plan.findById(id);
-  console.log(plan.name);
   if (!plan) {
     const err = new CustomError("Plan not found", 404);
     return next(err);
@@ -176,9 +173,6 @@ exports.subscribeToPlan = asyncErrorHandler(async (req, res, next) => {
   //update user object by pushing into the subscription array and making necessary decrement and increment
   //was req.user.approvedBalance before => changed to amount
   if (plan.maximumPrice >= amount) {
-    console.log(
-      "the amount is less than the maximum price of the plan, and hence we are running this functionality"
-    );
     await User.findByIdAndUpdate(
       req.user._id,
       {
@@ -200,9 +194,6 @@ exports.subscribeToPlan = asyncErrorHandler(async (req, res, next) => {
     });
   }
   //if amount is greater than maximum price of plan
-  console.log(
-    "amount is greater than maximum price of plan and hence this should run"
-  );
   await User.findByIdAndUpdate(
     req.user._id,
     {

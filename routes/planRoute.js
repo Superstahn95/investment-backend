@@ -18,6 +18,9 @@ router.post("/", isAuth, checkUserRole("admin"), createPlan);
 router.get("/", getPlans);
 //authenticated users and not for guests
 router.patch("/subscribe", isAuth, subscribeToPlan);
+router.get("/protected", isAuth, (req, res, next) => {
+  res.send("Route accessible right now");
+});
 //admin only i guess
 router.get("/:id", getPlan);
 //admin only

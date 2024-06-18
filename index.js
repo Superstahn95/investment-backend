@@ -54,6 +54,7 @@ app.use("/api/v1/users", require("./routes/userRoute"));
 app.use("/api/v1/dashboard-summary", require("./routes/dashboardStatsRoute"));
 app.use("/api/v1/withdrawal", require("./routes/withdrawalRoute"));
 app.use("/api/v1/transaction", require("./routes/transactionRoute"));
+// app.use("/api/v1/message", require("./routes/messageRoute"));
 // app.get("*", (req, res) => {
 //   res.sendFile(path.join(__dirname, "dist", "index.html"));
 // });

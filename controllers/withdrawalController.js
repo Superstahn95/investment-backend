@@ -18,7 +18,9 @@ exports.getWithdrawals = asyncErrorHandler(async (req, res, next) => {
 //get a user's withdrawal history
 exports.getIndividualWithdrawalHistory = asyncErrorHandler(
   async (req, res, next) => {
-    const withdrawals = await Withdrawal.find({ user: req.user._id });
+    const withdrawals = await Withdrawal.find({ user: req.user._id }).sort({
+      createdAt: -1,
+    });
     res.status(200).json({
       status: "success",
       withdrawals,

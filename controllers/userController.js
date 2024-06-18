@@ -73,6 +73,7 @@ exports.authorizeUserLogin = asyncErrorHandler(async (req, res, next) => {
     const err = new CustomError("User not found", 404);
     return next(err);
   }
+
   user.isAuthorized = !user.isAuthorized;
   await user.save({ validateBeforeSave: false });
   res.status(200).json({
@@ -80,6 +81,7 @@ exports.authorizeUserLogin = asyncErrorHandler(async (req, res, next) => {
     message: user.isAuthorized
       ? "User has been granted access"
       : "User access has been revoked",
+    user,
   });
 });
 
@@ -133,7 +135,6 @@ exports.changeUserPassword = asyncErrorHandler(async (req, res, next) => {
     oldPassword,
     user.password
   );
-  console.log(isPasswordMatch);
   if (isPasswordMatch === false) {
     const err = new CustomError("Incorrect password", 400);
     return next(err);
@@ -211,7 +212,6 @@ const updateUserBalancePerSubscription = asyncErrorHandler(
       { $inc: { investedFundsAndReturns: topUp } },
       { new: true, runValidators: true }
     );
-    console.log("A user balance has been updated");
   }
 );
 
@@ -237,7 +237,6 @@ exports.scheduleUserBalanceUpdates = asyncErrorHandler(async () => {
 
 // no need calculating con expression, since this is likely to update every day
 const topUpUser = asyncErrorHandler(async (req, res, next) => {
-  // console.log("add $10 to user's total Deposit");
   const users = await User.find();
   const check = true;
   if (!check) {
@@ -250,16 +249,12 @@ const topUpUser = asyncErrorHandler(async (req, res, next) => {
       cron.schedule("0 0 * * *", async function () {
         const plan = await Plan.findById(subscription.plan);
         const topUpAmount = (plan.topUpAmount / 100) * subscription.cost;
-        console.log(topUpAmount);
         user.investedFundsAndReturns =
           user.investedFundsAndReturns + topUpAmount;
         user.totalProfit = user.totalProfit + topUpAmount;
         await user.save({ validateBeforeSave: false });
-        console.log(
-          `we just updated ${user.name}'s invested funds and returns field`
-        );
       });
     }
   }
 });
-// topUpUser();
+topUpUser();

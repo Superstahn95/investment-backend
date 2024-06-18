@@ -6,27 +6,15 @@ const CustomError = require("../utils/customError");
 exports.registerUser = asyncErrorHandler(async (req, res, next) => {
   const newUser = new User(req.body);
   const user = await newUser.save();
-  const refreshToken = generateRefreshToken(user._id);
-  const accessToken = generateAccessToken(user._id);
-
-  res
-    .cookie("refresh_token", refreshToken, {
-      httpOnly: true,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "none",
-    })
-    .status(201)
-    .json({
-      status: "success",
-      message: "user created",
-      user,
-      token: accessToken,
-    });
+  // we do not wish to log in the user after registration
+  res.status(201).json({
+    status: "success",
+    message:
+      "Registration successful. Hold on while we review and approve your account",
+  });
 });
 
 exports.loginUser = asyncErrorHandler(async (req, res, next) => {
-  console.log("Hitting this end point");
   const { email, password } = req.body;
   if (!email || !password) {
     //check on the right status codes later
@@ -36,20 +24,21 @@ exports.loginUser = asyncErrorHandler(async (req, res, next) => {
   //check if a user with that mail exists
   const user = await User.findOne({ email }).populate("subscriptions.plan");
   if (!user) {
-    const err = new CustomError("Invalid credentials", 401);
+    const err = new CustomError("Invalid credentials", 400);
     return next(err);
   }
 
   const isPasswordMatch = await user.compareDbPassword(password, user.password);
-  console.log(password);
-  console.log(isPasswordMatch);
   if (!isPasswordMatch) {
     const err = new CustomError("Invalid credentials", 400);
     return next(err);
   }
+  if (!user.isAuthorized && user.role !== "admin") {
+    const err = new CustomError("Your account is still under review", 401);
+    return next(err);
+  }
   const refreshToken = generateRefreshToken(user._id);
   const accessToken = generateAccessToken(user._id);
-  console.log("backend sending details to client");
   res
     .cookie("refresh_token", refreshToken, {
       httpOnly: true,
@@ -115,8 +104,13 @@ exports.refreshToken = asyncErrorHandler(async (req, res, next) => {
   res.status(200).json(responseData);
 });
 
+exports.getNewAccessToken = asyncErrorHandler(async (req, res, next) => {
+  const accessToken = generateAccessToken(req.user?.id);
+  const responseData = { token: accessToken };
+  res.status(200).json(responseData);
+});
+
 exports.logOut = asyncErrorHandler(async (req, res, next) => {
-  const refreshToken = req.cookies["refresh_token"];
   res.clearCookie("refresh_token", {
     httpOnly: true,
     secure: true,

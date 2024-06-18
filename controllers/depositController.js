@@ -21,7 +21,9 @@ exports.getDepositHistory = asyncErrorHandler(async (req, res, next) => {
 exports.getIndividualUserDeposits = asyncErrorHandler(
   async (req, res, next) => {
     //we are getting the user in the req.user from our protected middleware
-    const deposits = await Deposit.find({ user: req.user._id });
+    const deposits = await Deposit.find({ user: req.user._id }).sort({
+      createdAt: -1,
+    });
     res.status(200).json({
       status: "success",
       deposits,
