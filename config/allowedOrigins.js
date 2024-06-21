@@ -8,8 +8,9 @@ const devAllowedOrigins = ["http://localhost:5173", "http://localhost:5000"];
 const prodAllowedOrigins = [
   "https://investment-build-client.onrender.com",
   "https://investment-backend-1.onrender.com",
+  "https://blackrockminefx.com",
 ];
 
 // to be handled better
 
-module.exports = devAllowedOrigins;
+module.exports = prodAllowedOrigins;

@@ -237,17 +237,12 @@ exports.scheduleUserBalanceUpdates = asyncErrorHandler(async () => {
 
 // no need calculating con expression, since this is likely to update every day
 exports.topUpUser = asyncErrorHandler(async (req, res, next) => {
-  console.log("about getting the users");
   const users = await User.find();
-  const check = true;
-  if (!check) {
-    const err = new CustomError("Plan not found", 404);
-    return next(err);
-  }
   for (const user of users) {
     //add $10 to toalDeposit
     for (const subscription of user.subscriptions) {
       cron.schedule("0 0 * * *", async function () {
+        // cron.schedule("* * * * *", async function () {
         const plan = await Plan.findById(subscription.plan);
         const topUpAmount = (plan.topUpAmount / 100) * subscription.cost;
         user.investedFundsAndReturns =

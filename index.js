@@ -5,14 +5,18 @@ const morgan = require("morgan");
 const helmet = require("helmet");
 const connectDb = require("./config/db");
 const globalErrorHandler = require("./controllers/errorController");
+const { topUpUser } = require("./controllers/userController");
 // const cors = require("cors");
 const corsMiddleware = require("./middlewares/cors");
-console.log("here");
+
+process.on("uncaughtException", (err) => {
+  process.exit(1);
+});
+
 dotenv.config();
 const app = express();
 
 const PORT = process.env.PORT || 5000;
-console.log("here 2");
 
 //middlewares
 app.use(morgan("dev"));
@@ -23,6 +27,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(corsMiddleware);
 
+topUpUser();
 // app.use((req, res, next) => {
 //   // let connectSrc = "'self'";
 //   // if (process.env.NODE_ENV === "production") {
@@ -49,7 +54,6 @@ app.get("/test", (req, res) => {
 });
 
 app.use("/api/v1/auth", require("./routes/authRoute"));
-console.log("here 3");
 app.use("/api/v1/deposit", require("./routes/depositRoute"));
 app.use("/api/v1/plan", require("./routes/planRoute"));
 app.use("/api/v1/users", require("./routes/userRoute"));
@@ -70,7 +74,13 @@ app.use("*", (req, res) => {
 //global error handler
 app.use(globalErrorHandler);
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`server running on our port : ${PORT}`);
   connectDb();
+});
+
+process.on("unhandledRejection", (err) => {
+  server.close(() => {
+    process.exit(1);
+  });
 });
