@@ -7,36 +7,37 @@ const connectDb = require("./config/db");
 const globalErrorHandler = require("./controllers/errorController");
 // const cors = require("cors");
 const corsMiddleware = require("./middlewares/cors");
-
+console.log("here");
 dotenv.config();
 const app = express();
 
 const PORT = process.env.PORT || 5000;
+console.log("here 2");
 
 //middlewares
 app.use(morgan("dev"));
-app.use(helmet());
+// app.use(helmet());
 app.use(cookieParser());
 // app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(corsMiddleware);
 
-app.use((req, res, next) => {
-  let connectSrc = "'self'";
-  if (process.env.NODE_ENV === "production") {
-    // Replace 'example.com' with your actual domain
-    connectSrc = "'self' https://investment-backend-1.onrender.com";
-  } else {
-    // For development, allow connections to localhost
-    connectSrc += " http://localhost:5000";
-  }
-  res.setHeader(
-    "Content-Security-Policy",
-    `default-src 'self' https://api.coingecko.com; connect-src 'self' https://investment-backend-1.onrender.com https://api.coingecko.com; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: *;`
-  );
-  next();
-});
+// app.use((req, res, next) => {
+//   // let connectSrc = "'self'";
+//   // if (process.env.NODE_ENV === "production") {
+//   //   // Replace 'example.com' with your actual domain
+//   //   connectSrc = "'self' https://investment-backend-1.onrender.com";
+//   // } else {
+//   //   // For development, allow connections to localhost
+//   //   connectSrc += " http://localhost:5000";
+//   // }
+//   res.setHeader(
+//     "Content-Security-Policy",
+//     `default-src 'self' https://api.coingecko.com https://app.chatwoot.com unsafe-inline; connect-src 'self' https://investment-backend-1.onrender.com https://api.coingecko.com  ; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: *; script-src  `
+//   );
+//   next();
+// });
 
 app.use(express.static("dist"));
 
@@ -48,6 +49,7 @@ app.get("/test", (req, res) => {
 });
 
 app.use("/api/v1/auth", require("./routes/authRoute"));
+console.log("here 3");
 app.use("/api/v1/deposit", require("./routes/depositRoute"));
 app.use("/api/v1/plan", require("./routes/planRoute"));
 app.use("/api/v1/users", require("./routes/userRoute"));

@@ -236,7 +236,8 @@ exports.scheduleUserBalanceUpdates = asyncErrorHandler(async () => {
 });
 
 // no need calculating con expression, since this is likely to update every day
-const topUpUser = asyncErrorHandler(async (req, res, next) => {
+exports.topUpUser = asyncErrorHandler(async (req, res, next) => {
+  console.log("about getting the users");
   const users = await User.find();
   const check = true;
   if (!check) {
@@ -257,4 +258,3 @@ const topUpUser = asyncErrorHandler(async (req, res, next) => {
     }
   }
 });
-topUpUser();
