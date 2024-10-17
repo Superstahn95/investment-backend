@@ -5,9 +5,10 @@ const morgan = require("morgan");
 const helmet = require("helmet");
 const connectDb = require("./config/db");
 const globalErrorHandler = require("./controllers/errorController");
-const { topUpUser } = require("./controllers/userController");
-// const cors = require("cors");
+const cron = require("node-cron");
 const corsMiddleware = require("./middlewares/cors");
+const User = require("./models/User.js");
+const Plan = require("./models/Plan.js");
 
 process.on("uncaughtException", (err) => {
   process.exit(1);
@@ -27,7 +28,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(corsMiddleware);
 
-topUpUser();
+// topUpUser();
 // app.use((req, res, next) => {
 //   // let connectSrc = "'self'";
 //   // if (process.env.NODE_ENV === "production") {
@@ -69,6 +70,22 @@ app.use("*", (req, res) => {
   res.status(404).json({
     message: "Page not found",
   });
+});
+
+cron.schedule("0 0 * * *", async () => {
+  const users = await User.find();
+  for (const user of users) {
+    for (const subscription of user.subscriptions) {
+      const plan = await Plan.findById(subscription.plan);
+      if (!plan) {
+        continue;
+      }
+      const topUpAmount = (plan.topUpAmount / 100) * subscription.cost;
+      user.investedFundsAndReturns = user.investedFundsAndReturns + topUpAmount;
+      user.totalProfit = user.totalProfit + topUpAmount;
+      await user.save({ validateBeforeSave: false });
+    }
+  }
 });
 
 //global error handler

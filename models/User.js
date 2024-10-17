@@ -88,6 +88,10 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  bonus: {
+    type: Number,
+    default: 0,
+  },
   subscriptions: [subscriptionSchema], //We are actually using a schema here without creating a collection in our db
   password: {
     type: String,

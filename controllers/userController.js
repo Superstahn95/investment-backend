@@ -236,20 +236,3 @@ exports.scheduleUserBalanceUpdates = asyncErrorHandler(async () => {
 });
 
 // no need calculating con expression, since this is likely to update every day
-exports.topUpUser = asyncErrorHandler(async (req, res, next) => {
-  const users = await User.find();
-  for (const user of users) {
-    //add $10 to toalDeposit
-    for (const subscription of user.subscriptions) {
-      cron.schedule("0 0 * * *", async function () {
-        // cron.schedule("* * * * *", async function () {
-        const plan = await Plan.findById(subscription.plan);
-        const topUpAmount = (plan.topUpAmount / 100) * subscription.cost;
-        user.investedFundsAndReturns =
-          user.investedFundsAndReturns + topUpAmount;
-        user.totalProfit = user.totalProfit + topUpAmount;
-        await user.save({ validateBeforeSave: false });
-      });
-    }
-  }
-});

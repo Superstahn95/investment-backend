@@ -13,4 +13,4 @@ const prodAllowedOrigins = [
 
 // to be handled better
 
-module.exports = prodAllowedOrigins;
+module.exports = devAllowedOrigins;

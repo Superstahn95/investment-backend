@@ -7,11 +7,28 @@ exports.registerUser = asyncErrorHandler(async (req, res, next) => {
   const newUser = new User(req.body);
   const user = await newUser.save();
   // we do not wish to log in the user after registration
-  res.status(201).json({
-    status: "success",
-    message:
-      "Registration successful. Hold on while we review and approve your account",
-  });
+  // res.status(201).json({
+  //   status: "success",
+  //   message:
+  //     "Registration successful. Hold on while we review and approve your account",
+  // });
+  const refreshToken = generateRefreshToken(user._id);
+  const accessToken = generateAccessToken(user._id);
+  res
+    .cookie("refresh_token", refreshToken, {
+      httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      // secure: process.env.NODE_ENV === "production",
+      secure: true,
+      sameSite: "none",
+    })
+    .status(200)
+    .json({
+      status: "success",
+      message: "user logged in",
+      user,
+      token: accessToken,
+    });
 });
 
 exports.loginUser = asyncErrorHandler(async (req, res, next) => {

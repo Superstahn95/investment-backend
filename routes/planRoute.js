@@ -24,7 +24,7 @@ router.get("/protected", isAuth, (req, res, next) => {
 //admin only i guess
 router.get("/:id", getPlan);
 //admin only
-router.patch("/:id", isAuth, checkUserRole("admin"), updatePlan);
+router.put("/:id", isAuth, checkUserRole("admin"), updatePlan);
 router.delete("/:id", isAuth, checkUserRole("admin"), deletePlan);
 
 module.exports = router;

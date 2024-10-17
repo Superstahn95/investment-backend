@@ -141,7 +141,8 @@ exports.subscribeToPlan = asyncErrorHandler(async (req, res, next) => {
     const err = new CustomError("Plan does not exist", 404);
     return next(err);
   }
-  if (amount < plan.minimumPrice) {
+  const additionalAmount = parseInt(amount);
+  if (additionalAmount < plan.minimumPrice) {
     const err = new CustomError(
       `$${amount} too low for selected plan. Increase the amount`
     );
@@ -156,7 +157,7 @@ exports.subscribeToPlan = asyncErrorHandler(async (req, res, next) => {
     return next(err);
   }
   //if amount entered is greater than user balance as final check
-  if (amount > req.user.approvedBalance) {
+  if (additionalAmount > req.user.approvedBalance) {
     const err = new CustomError(
       "Amount entered is less than your approved balance"
     );
@@ -166,7 +167,7 @@ exports.subscribeToPlan = asyncErrorHandler(async (req, res, next) => {
   const newSubscription = {
     plan: plan._id,
     startDate: new Date(),
-    cost: amount,
+    cost: additionalAmount,
     frequency: plan.topUpInterval,
   };
 
