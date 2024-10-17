@@ -2,7 +2,6 @@ const express = require("express");
 const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
-const helmet = require("helmet");
 const connectDb = require("./config/db");
 const globalErrorHandler = require("./controllers/errorController");
 const cron = require("node-cron");
@@ -20,30 +19,11 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 //middlewares
-app.use(morgan("dev"));
-// app.use(helmet());
+// app.use(morgan("dev"));
 app.use(cookieParser());
-// app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(corsMiddleware);
-
-// topUpUser();
-// app.use((req, res, next) => {
-//   // let connectSrc = "'self'";
-//   // if (process.env.NODE_ENV === "production") {
-//   //   // Replace 'example.com' with your actual domain
-//   //   connectSrc = "'self' https://investment-backend-1.onrender.com";
-//   // } else {
-//   //   // For development, allow connections to localhost
-//   //   connectSrc += " http://localhost:5000";
-//   // }
-//   res.setHeader(
-//     "Content-Security-Policy",
-//     `default-src 'self' https://api.coingecko.com https://app.chatwoot.com unsafe-inline; connect-src 'self' https://investment-backend-1.onrender.com https://api.coingecko.com  ; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: *; script-src  `
-//   );
-//   next();
-// });
 
 app.use(express.static("dist"));
 
